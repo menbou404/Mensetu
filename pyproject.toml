@@ -1,0 +1,17 @@
+[project]
+name = "mensetu"
+version = "0.1.0"
+description = "面接の録画(mp4)から話し方・表情・回答内容を自動分析して振り返りレポートを作るローカルWebアプリ"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "anthropic>=2.8.0",
+    "fastapi>=0.163.1",
+    "faster-whisper>=1.2.1",
+    "mediapipe>=1.2.3",
+    "numpy>=2.5.5",
+    "openai>=3.51.0",
+    "python-dotenv>=1.2.4",
+    "python-multipart>=0.0.33",
+    "uvicorn[standard]>=0.54.0",
+]

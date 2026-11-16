@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>面接振り返りアナライザー</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a href="#/" class="brand">面接振り返りアナライザー</a>
+    <span class="tagline">録画をドロップして、話し方・表情・回答内容を振り返る</span>
+  </header>
+
+  <main id="view-home" class="container">
+    <section class="card">
+      <h2>新しく分析する</h2>
+      <form id="upload-form">
+        <label id="dropzone" class="dropzone">
+          <input type="file" id="file" accept=".mp4,.mov,.m4v,.webm,.mkv,video/*" hidden>
+          <div class="dz-main">ここに面接動画 (mp4 など) をドラッグ&ドロップ</div>
+          <div class="dz-sub">またはクリックしてファイルを選択</div>
+          <div id="file-name" class="dz-file"></div>
+        </label>
+
+        <div class="options">
+          <fieldset>
+            <legend>文字起こし</legend>
+            <label class="radio"><input type="radio" name="engine" value="local" checked> ローカル Whisper <small>無料・オフライン</small></label>
+            <label class="radio"><input type="radio" name="engine" value="openai" id="engine-openai"> OpenAI API <small id="openai-note">高速・従量課金</small></label>
+            <label class="inline" id="whisper-model-row">モデル
+              <select id="whisper-model"></select>
+            </label>
+          </fieldset>
+
+          <fieldset>
+            <legend>分析項目</legend>
+            <label class="check"><input type="checkbox" checked disabled> 話し方 (話速・フィラー・沈黙・声)</label>
+            <label class="check"><input type="checkbox" id="use-vision" checked> 表情・視線</label>
+            <label class="check"><input type="checkbox" id="use-ai"> 回答内容の AI 講評 <small id="ai-note">Claude</small></label>
+          </fieldset>
+        </div>
+
+        <label class="context" id="context-row">応募先・職種・面接の種類など (任意 / AI 講評の精度が上がります)
+          <textarea id="context" rows="2" placeholder="例: IT 企業の総合職、一次面接 (オンライン)、ガクチカと志望動機を聞かれた"></textarea>
+        </label>
+
+        <button type="submit" id="submit" class="primary" disabled>分析を開始</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>これまでの分析</h2>
+      <div id="history" class="history"><p class="muted">まだありません</p></div>
+    </section>
+  </main>
+
+  <main id="view-job" class="container" hidden>
+    <a href="#/" class="back">← 一覧に戻る</a>
+    <h1 id="job-title"></h1>
+
+    <section id="progress" class="card" hidden>
+      <div class="progress-step" id="progress-step"></div>
+      <div class="bar"><div id="progress-bar"></div></div>
+      <p class="muted small">ローカル Whisper は動画の長さと同じくらいの時間がかかることがあります。このページは閉じても解析は続きます。</p>
+    </section>
+
+    <section id="job-error" class="card error" hidden></section>
+
+    <div id="report" hidden>
+      <div class="report-grid">
+        <div class="video-col">
+          <video id="video" controls playsinline></video>
+          <div class="actions">
+            <button id="export-md">レポートを Markdown で保存</button>
+            <button id="delete-job" class="danger">削除</button>
+          </div>
+        </div>
+        <div class="summary-col">
+          <div id="kpis" class="kpis"></div>
+          <div id="checks" class="checks"></div>
+        </div>
+      </div>
+
+      <section class="card" id="ai-section">
+        <h2>AI 講評</h2>
+        <div id="ai-body"></div>
+      </section>
+
+      <section class="card">
+        <h2>声の大きさ・高さの推移</h2>
+        <div class="chart-wrap"><canvas id="chart-voice"></canvas></div>
+      </section>
+
+      <section class="card" id="vision-chart-section">
+        <h2>目線・笑顔の推移</h2>
+        <div class="chart-wrap"><canvas id="chart-vision"></canvas></div>
+      </section>
+
+      <section class="card">
+        <h2>文字起こし <small class="muted">時刻をクリックするとその場面から再生 / <mark class="filler">フィラー</mark> <span class="pause-chip">沈黙</span></small></h2>
+        <div id="transcript" class="transcript"></div>
+      </section>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

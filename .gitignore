@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# secrets
+.env
+
+# 解析データ (面接動画などの個人情報を含むため絶対にコミットしない)
+data/
+models/
+
+# OS
+.DS_Store
+
+# Claude Code のローカル設定
+.claude/
